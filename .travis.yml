@@ -1,0 +1,60 @@
+language: php
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - hhvm
+  - nightly
+
+env:
+  global:
+    - SYMFONY_VERSION=""
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: hhvm
+    - php: nightly
+    - env: SYMFONY_VERSION="dev-master"
+  include:
+    - php: 7.0
+      env: SYMFONY_VERSION="2.1.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.2.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.3.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.4.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.5.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.6.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.7.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="2.8.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="3.0.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="3.1.*"
+    - php: 7.0
+      env: SYMFONY_VERSION="dev-master"
+
+before_install:
+  - composer selfupdate
+  - .travis/update_symfony_deps_version.sh
+
+install:
+  - composer install --no-interaction --prefer-source
+
+script:
+  - vendor/bin/phpunit --coverage-text

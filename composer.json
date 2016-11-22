@@ -1,0 +1,46 @@
+{
+    "name": "swop/github-webhook-bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "description": "Symfony bundle which aims to simplify GitHub web hook handling.",
+    "keywords": [
+        "github",
+        "webhook",
+        "security",
+        "symfony"
+    ],
+    "authors": [
+        {
+            "name": "Sylvain Mauduit",
+            "email": "sylvain@mauduit.fr",
+            "homepage": "https://github.com/Swop"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "swop/github-webhook": "^2.0@dev",
+        "psr/http-message": "^1.0",
+        "symfony/psr-http-message-bridge": "^1.0",
+        "zendframework/zend-diactoros": "^1.3",
+        "symfony/http-kernel": "^2.3|^3.0",
+        "symfony/http-foundation": "^2.3|^3.0",
+        "symfony/dependency-injection": "^2.3|^3.0",
+        "symfony/config": "^2.3|^3.0",
+        "symfony/event-dispatcher": "^2.3|^3.0",
+        "sensio/framework-extra-bundle": "^2.3|^3.0",
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Swop\\Bundle\\GitHubWebHookBundle\\": "./"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}

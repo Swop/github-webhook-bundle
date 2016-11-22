@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <!-- Listeners -->
+        <parameter key="github_webhook.controller_listener.class">Swop\Bundle\GitHubWebHookBundle\Listener\GitHubHookControllerSubscriber</parameter>
+        <parameter key="github_webhook.exception_listener.class">Swop\Bundle\GitHubWebHookBundle\Listener\GitHubHookExceptionSubscriber</parameter>
+        <parameter key="github_webhook.view_listener.class">Swop\Bundle\GitHubWebHookBundle\Listener\GitHubHookViewSubscriber</parameter>
+
+        <!-- Utils -->
+        <parameter key="github_webhook.http_message_factory.class">Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory</parameter>
+        <parameter key="github_webhook.signature_validator.class">Swop\GitHubWebHook\Security\SignatureValidator</parameter>
+        <parameter key="github_webhook.event_factory.class">Swop\GitHubWebHook\Event\GitHubEventFactory</parameter>
+    </parameters>
+
+    <services>
+        <!-- Listeners -->
+        <service id="github_webhook.controller_listener" class="%github_webhook.controller_listener.class%">
+            <argument type="service" id="github_webhook.http_message_factory" />
+            <argument type="service" id="github_webhook.signature_validator" />
+            <argument type="service" id="github_webhook.event_factory" />
+            <argument type="service" id="service_container" />
+            <argument /><!-- default secret -->
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="github_webhook.exception_listener" class="%github_webhook.exception_listener.class%">
+            <argument>%kernel.debug%</argument>
+            <argument type="service" id="logger" on-invalid="null" />
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <service id="github_webhook.view_listener" class="%github_webhook.view_listener.class%">
+            <tag name="kernel.event_subscriber" />
+        </service>
+
+        <!-- Utils -->
+        <service id="github_webhook.http_message_factory" class="%github_webhook.http_message_factory.class%" public="false" />
+        <service id="github_webhook.signature_validator" class="%github_webhook.signature_validator.class%" public="false" />
+        <service id="github_webhook.event_factory" class="%github_webhook.event_factory.class%" public="false" />
+    </services>
+</container>
