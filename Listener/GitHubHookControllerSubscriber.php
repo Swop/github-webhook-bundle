@@ -18,6 +18,7 @@ use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Zend\Diactoros\Stream;
 
@@ -85,7 +86,7 @@ class GitHubHookControllerSubscriber implements EventSubscriberInterface
      */
     public function checkSecurity(FilterControllerEvent $event)
     {
-        if (!$event->isMasterRequest()) {
+        if ($event->getRequestType() !== HttpKernelInterface::MASTER_REQUEST) {
             return;
         }
 

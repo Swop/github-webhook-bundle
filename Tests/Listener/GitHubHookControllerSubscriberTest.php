@@ -14,6 +14,7 @@ use Swop\Bundle\GitHubWebHookBundle\Listener\GitHubHookControllerSubscriber;
 use Swop\GitHubWebHook\Event\GitHubEvent;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Zend\Diactoros\ServerRequest;
 use Prophecy\Argument;
 
@@ -47,17 +48,17 @@ class GitHubHookControllerSubscriberTest extends \PHPUnit_Framework_TestCase
     public function testItShouldReturnEarlyIfNotMasterRequest()
     {
         $event = $this->prophesize('Symfony\Component\HttpKernel\Event\FilterControllerEvent');
-        $event->isMasterRequest()->shouldBeCalled()->willReturn(false);
+        $event->getRequestType()->shouldBeCalled()->willReturn(HttpKernelInterface::SUB_REQUEST);
 
         $this->subscriber->checkSecurity($event->reveal());
     }
 
-    public function testItShouldReturnEarlyIfNotMasterRequestIf()
+    public function testItShouldReturnEarlyIfNotWebHook()
     {
         $request = new Request();
 
         $event = $this->prophesize('Symfony\Component\HttpKernel\Event\FilterControllerEvent');
-        $event->isMasterRequest()->shouldBeCalled()->willReturn(true);
+        $event->getRequestType()->shouldBeCalled()->willReturn(HttpKernelInterface::MASTER_REQUEST);
         $event->getRequest()->shouldBeCalled()->willReturn($request);
 
         $this->subscriber->checkSecurity($event->reveal());
@@ -74,7 +75,7 @@ class GitHubHookControllerSubscriberTest extends \PHPUnit_Framework_TestCase
         $request->headers->set('X-GitHub-Event', 'unknown_type');
 
         $event = $this->prophesize('Symfony\Component\HttpKernel\Event\FilterControllerEvent');
-        $event->isMasterRequest()->shouldBeCalled()->willReturn(true);
+        $event->getRequestType()->shouldBeCalled()->willReturn(HttpKernelInterface::MASTER_REQUEST);
         $event->getRequest()->shouldBeCalled()->willReturn($request);
         $event->getController()->shouldBeCalled()->willReturn([$this, 'testNotHandledEventTypesShouldFail']);
 
@@ -99,7 +100,7 @@ class GitHubHookControllerSubscriberTest extends \PHPUnit_Framework_TestCase
         $request->headers->set('X-GitHub-Event', 'handled_type');
 
         $event = $this->prophesize('Symfony\Component\HttpKernel\Event\FilterControllerEvent');
-        $event->isMasterRequest()->shouldBeCalled()->willReturn(true);
+        $event->getRequestType()->shouldBeCalled()->willReturn(HttpKernelInterface::MASTER_REQUEST);
         $event->getRequest()->shouldBeCalled()->willReturn($request);
         $event->getController()->shouldNotBeCalled();
 
