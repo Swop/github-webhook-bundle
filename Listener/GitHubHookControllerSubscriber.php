@@ -103,11 +103,7 @@ class GitHubHookControllerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // Rewriting the php://input stream into a temp stream allow us to read the request body multiple times
-        $bodyStream = new Stream('php://temp', 'wb+');
-        $bodyStream->write(file_get_contents('php://input'));
-
-        $psr7Request = $this->messageFactory->createRequest($request)->withBody($bodyStream);
+        $psr7Request = $this->messageFactory->createRequest($request);
 
         $eventType            = $request->headers->get('X-GitHub-Event');
         $mappedConfigurations = $this->mapConfigurations($configurations);
