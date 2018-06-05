@@ -105,7 +105,6 @@ class GitHubHookControllerSubscriberTest extends \PHPUnit_Framework_TestCase
         $event->getController()->shouldNotBeCalled();
 
         $initialPsrRequest = $this->prophesize('Psr\Http\Message\ServerRequestInterface');
-        $initialPsrRequest->withBody(Argument::any())->shouldBeCalled()->willReturn($initialPsrRequest);
 
         $this->messageFactory->createRequest($request)->shouldBeCalled()->willReturn($initialPsrRequest);
 
